@@ -1,5 +1,6 @@
-# Allow build scripts to be referenced without being copied into the final image
-ARG FEDORA_VERSION=44 # keep this in sync with aurora
+# keep this in sync with aurora or else you will not get any updates
+ARG FEDORA_VERSION=44
+
 FROM scratch AS ctx
 COPY build_files /
 
@@ -11,7 +12,7 @@ FROM ghcr.io/ublue-os/akmods-zfs:coreos-stable-"${FEDORA_VERSION}" AS akmods-zfs
 
 # change the tag to whatever you need here
 # using :latest for demonstration for now because it doesn't have ZFS/coreos-stable kernel
-FROM ghcr.io/ublue-os/aurora:latest AS base
+FROM ghcr.io/ublue-os/aurora:"${FEDORA_VERSION}" AS base
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=bind,from=akmods,src=/kernel-rpms,dst=/tmp/kernel-rpms \
