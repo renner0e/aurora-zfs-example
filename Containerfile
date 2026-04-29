@@ -8,10 +8,14 @@ COPY build_files /
 # you can omit this and get the kernel-rpms from the akmods-zfs image instead
 FROM ghcr.io/ublue-os/akmods:coreos-stable-"${FEDORA_VERSION}" AS akmods
 
+# If this breaks because there is a new major kernel release and zfs isn't
+# available yet for that kernel then congratulations you found out why Aurora
+# dropped it. to pin replace with something like
+# akmods:zfs:coreos-stable-43-6.18.13-200.fc43.x86_64
+# https://github.com/ublue-os/akmods/pkgs/container/akmods-zfs
+# if you have to pin keep this in sync with the above if you use it
 FROM ghcr.io/ublue-os/akmods-zfs:coreos-stable-"${FEDORA_VERSION}" AS akmods-zfs
 
-# change the tag to whatever you need here
-# using :latest for demonstration for now because it doesn't have ZFS/coreos-stable kernel
 FROM ghcr.io/ublue-os/aurora:"${FEDORA_VERSION}" AS base
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
